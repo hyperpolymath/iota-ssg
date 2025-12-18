@@ -1,15 +1,15 @@
 ;; SPDX-License-Identifier: AGPL-3.0-or-later
 ;; SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
-;; ECOSYSTEM.scm — template-repo
+;; ECOSYSTEM.scm — iota-ssg
 
 (ecosystem
   (version "1.0.0")
-  (name "template-repo")
-  (type "project")
-  (purpose "Project in the hyperpolymath ecosystem")
+  (name "iota-ssg")
+  (type "satellite")
+  (purpose "Static Site Generator adapters for the hyperpolymath MCP ecosystem")
 
   (position-in-ecosystem
-    "Part of hyperpolymath ecosystem. Follows RSR guidelines.")
+    "Satellite project providing 28 SSG adapters for poly-ssg-mcp hub. Follows RSR guidelines.")
 
   (related-projects
     (project
@@ -24,5 +24,5 @@
              (url "https://github.com/hyperpolymath/rhodium-standard-repositories")
              (relationship "standard")))
 
-  (what-this-is "Project in the hyperpolymath ecosystem")
-  (what-this-is-not "- NOT exempt from RSR compliance"))
+  (what-this-is "Satellite SSG adapter collection synchronized with poly-ssg-mcp hub")
+  (what-this-is-not "- NOT the MCP server itself (that's poly-ssg-mcp)\n- NOT exempt from RSR compliance"))

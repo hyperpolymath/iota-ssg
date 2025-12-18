@@ -1,48 +1,64 @@
+# Contributing to iota-ssg
+
+Thank you for your interest in contributing to iota-ssg! This document provides guidelines and information for contributors.
+
+## Table of Contents
+
+- [Code of Conduct](#code-of-conduct)
+- [Getting Started](#getting-started)
+- [How to Contribute](#how-to-contribute)
+- [Development Workflow](#development-workflow)
+- [Style Guidelines](#style-guidelines)
+- [Security](#security)
+
+---
+
+## Code of Conduct
+
+This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (for adapter development)
+- Git with signed commits enabled
+- Familiarity with the SSG you want to work with
+
+### Setup
+
+```bash
 # Clone the repository
-git clone https://{{FORGE}}/{{OWNER}}/{{REPO}}.git
-cd {{REPO}}
-
-# Using Nix (recommended for reproducibility)
-nix develop
-
-# Or using toolbox/distrobox
-toolbox create {{REPO}}-dev
-toolbox enter {{REPO}}-dev
-# Install dependencies manually
+git clone https://github.com/hyperpolymath/iota-ssg.git
+cd iota-ssg
 
 # Verify setup
-just check   # or: cargo check / mix compile / etc.
-just test    # Run test suite
+ls adapters/  # View available adapters
 ```
 
 ### Repository Structure
+
 ```
-{{REPO}}/
-├── src/                 # Source code (Perimeter 1-2)
-├── lib/                 # Library code (Perimeter 1-2)
-├── extensions/          # Extensions (Perimeter 2)
-├── plugins/             # Plugins (Perimeter 2)
-├── tools/               # Tooling (Perimeter 2)
-├── docs/                # Documentation (Perimeter 3)
-│   ├── architecture/    # ADRs, specs (Perimeter 2)
-│   └── proposals/       # RFCs (Perimeter 3)
-├── examples/            # Examples (Perimeter 3)
-├── spec/                # Spec tests (Perimeter 3)
-├── tests/               # Test suite (Perimeter 2-3)
-├── .well-known/         # Protocol files (Perimeter 1-3)
-├── .github/             # GitHub config (Perimeter 1)
-│   ├── ISSUE_TEMPLATE/
-│   └── workflows/
-├── CHANGELOG.md
+iota-ssg/
+├── adapters/              # 28 SSG adapter implementations
+│   ├── babashka.js       # Clojure SSG
+│   ├── cobalt.js         # Rust SSG
+│   ├── hakyll.js         # Haskell SSG
+│   ├── zola.js           # Rust SSG
+│   └── ...               # More adapters
+├── .github/
+│   ├── ISSUE_TEMPLATE/   # Issue templates
+│   └── workflows/        # CI/CD workflows
 ├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md      # This file
-├── GOVERNANCE.md
-├── LICENSE
-├── MAINTAINERS.md
+├── CONTRIBUTING.md       # This file
+├── LICENSE.txt
 ├── README.adoc
 ├── SECURITY.md
-├── flake.nix            # Nix flake (Perimeter 1)
-└── justfile             # Task runner (Perimeter 1)
+├── META.scm              # Architecture decisions
+├── ECOSYSTEM.scm         # Ecosystem positioning
+└── STATE.scm             # Project state tracking
 ```
 
 ---
@@ -53,25 +69,24 @@ just test    # Run test suite
 
 **Before reporting**:
 1. Search existing issues
-2. Check if it's already fixed in `{{MAIN_BRANCH}}`
-3. Determine which perimeter the bug affects
+2. Check if it's already fixed in `main`
+3. Identify which adapter is affected
 
 **When reporting**:
 
 Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) and include:
 
 - Clear, descriptive title
-- Environment details (OS, versions, toolchain)
+- Environment details (OS, Node version, SSG version)
 - Steps to reproduce
 - Expected vs actual behaviour
-- Logs, screenshots, or minimal reproduction
+- Logs or error messages
 
 ### Suggesting Features
 
 **Before suggesting**:
-1. Check the [roadmap](ROADMAP.md) if available
-2. Search existing issues and discussions
-3. Consider which perimeter the feature belongs to
+1. Search existing issues and discussions
+2. Consider if it fits the project's scope
 
 **When suggesting**:
 
@@ -80,37 +95,108 @@ Use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) an
 - Problem statement (what pain point does this solve?)
 - Proposed solution
 - Alternatives considered
-- Which perimeter this affects
+- Which adapter(s) this affects
 
 ### Your First Contribution
 
 Look for issues labelled:
 
-- [`good first issue`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/good%20first%20issue) — Simple Perimeter 3 tasks
-- [`help wanted`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/help%20wanted) — Community help needed
-- [`documentation`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/documentation) — Docs improvements
-- [`perimeter-3`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/perimeter-3) — Community sandbox scope
+- [`good first issue`](https://github.com/hyperpolymath/iota-ssg/labels/good%20first%20issue) — Simple tasks
+- [`help wanted`](https://github.com/hyperpolymath/iota-ssg/labels/help%20wanted) — Community help needed
+- [`documentation`](https://github.com/hyperpolymath/iota-ssg/labels/documentation) — Docs improvements
 
 ---
 
 ## Development Workflow
 
 ### Branch Naming
+
 ```
-docs/short-description       # Documentation (P3)
-test/what-added              # Test additions (P3)
-feat/short-description       # New features (P2)
-fix/issue-number-description # Bug fixes (P2)
-refactor/what-changed        # Code improvements (P2)
-security/what-fixed          # Security fixes (P1-2)
+docs/short-description       # Documentation
+feat/short-description       # New features/adapters
+fix/issue-number-description # Bug fixes
+refactor/what-changed        # Code improvements
+security/what-fixed          # Security fixes
 ```
 
 ### Commit Messages
 
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
+
 ```
 <type>(<scope>): <description>
 
 [optional body]
 
 [optional footer]
+```
+
+**Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `security`
+
+**Examples**:
+```
+feat(adapters): add support for new SSG framework
+fix(zola): correct build path detection
+docs: update installation instructions
+security(deps): update vulnerable dependency
+```
+
+### Pull Request Process
+
+1. **Fork** the repository
+2. **Create** a feature branch from `main`
+3. **Make** your changes with clear commits
+4. **Test** your changes locally
+5. **Push** to your fork
+6. **Open** a pull request
+
+**PR Requirements**:
+- Clear description of changes
+- Link to related issues
+- All CI checks passing
+- Signed commits
+
+---
+
+## Style Guidelines
+
+### JavaScript/Adapters
+
+- Use consistent formatting (Prettier)
+- Include SPDX license headers
+- Document public functions
+- Keep adapters focused and minimal
+
+### Documentation
+
+- Use clear, concise language
+- Include code examples where helpful
+- Keep README sections up to date
+
+---
+
+## Security
+
+- **Never** commit secrets, credentials, or API keys
+- Report security issues via [GitHub Security Advisories](https://github.com/hyperpolymath/iota-ssg/security/advisories/new)
+- See [SECURITY.md](SECURITY.md) for our security policy
+
+---
+
+## Questions?
+
+- Open a [Discussion](https://github.com/hyperpolymath/iota-ssg/discussions) for questions
+- Check existing issues before opening new ones
+
+---
+
+## Recognition
+
+Contributors are recognized in:
+- Release notes
+- GitHub contributors list
+- Security acknowledgments (for security reports)
+
+---
+
+*Thank you for helping improve iota-ssg!*

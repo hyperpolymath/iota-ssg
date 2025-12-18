@@ -1,1 +1,147 @@
+= iota-ssg
+:toc: macro
+:toc-title: Contents
+:toclevels: 2
 
+Satellite SSG adapter collection for the hyperpolymath MCP ecosystem.
+
+image:https://img.shields.io/badge/license-MIT%20OR%20AGPL--3.0-blue[License]
+image:https://img.shields.io/badge/RSR-Gold-gold[RSR Compliance]
+
+toc::[]
+
+== Overview
+
+**iota-ssg** provides 28 static site generator (SSG) adapters that wrap various SSG CLIs and expose them through the Model Context Protocol (MCP). These adapters are synchronized from the link:https://github.com/hyperpolymath/poly-ssg-mcp[poly-ssg-mcp] hub.
+
+=== What This Is
+
+* A satellite project in the hyperpolymath ecosystem
+* Collection of MCP adapters for 28 different static site generators
+* Covers SSGs written in 16+ programming languages
+* Follows Rhodium Standard Repository (RSR) guidelines
+
+=== What This Is Not
+
+* NOT the MCP server itself (that's link:https://github.com/hyperpolymath/poly-ssg-mcp[poly-ssg-mcp])
+* NOT a replacement for the individual SSG tools
+
+== Supported Static Site Generators
+
+[cols="1,1,2", options="header"]
+|===
+|Adapter |Language |Description
+
+|Babashka |Clojure |Fast native Clojure scripting
+|Cobalt |Rust |Simple static site generator
+|Coleslaw |Common Lisp |Flexible static blog generator
+|Cryogen |Clojure |Simple static site generator
+|Documenter.jl |Julia |Documentation generator for Julia
+|Ema |Haskell |Static site generator with hot reload
+|Fornax |F# |Scriptable static site generator
+|Franklin.jl |Julia |Flexible static site generator
+|Frog |Racket |Static blog generator
+|Hakyll |Haskell |Flexible static site generator
+|Laika |Scala |Site & e-book generator
+|Marmot |Crystal |Crystal static site generator
+|mdBook |Rust |Create books from Markdown
+|NimblePublisher |Elixir |Publishing framework
+|Nimrod |Nim |Static site generator
+|Orchid |Kotlin |Extensible documentation engine
+|Perun |Clojure |Composable static site generator
+|Pollen |Racket |Book-publishing system
+|Publish |Swift |Static site generator for Swift
+|Reggae |D |Static site generator in D
+|ScalaTex |Scala |Scala template engine
+|Serum |Elixir |Simple static site generator
+|StaticWebPages.jl |Julia |Academic website generator
+|Tableau |Elixir |Markdown static site generator
+|Wub |Tcl |Web application framework
+|YOCaml |OCaml |Static blog generator
+|Zola |Rust |Fast static site generator
+|Zotonic |Erlang |Web framework with CMS
+|===
+
+== Installation
+
+These adapters are meant to be used with the poly-ssg-mcp server. Clone this repository to use the adapters directly:
+
+[source,bash]
+----
+git clone https://github.com/hyperpolymath/iota-ssg.git
+cd iota-ssg
+----
+
+== Usage
+
+Each adapter exports a standard interface:
+
+[source,javascript]
+----
+import * as zola from './adapters/zola.js';
+
+// Connect to the SSG
+await zola.connect();
+
+// Use the tools
+const result = await zola.tools[0].execute({ path: './my-site' });
+
+// Disconnect
+await zola.disconnect();
+----
+
+=== Adapter Interface
+
+All adapters export:
+
+* `name` - Display name of the SSG
+* `language` - Implementation language
+* `description` - Brief description
+* `connect()` - Verify SSG is available
+* `disconnect()` - Clean up resources
+* `isConnected()` - Check connection status
+* `tools` - Array of available MCP tools
+
+== Project Structure
+
+[source]
+----
+iota-ssg/
+├── adapters/           # 28 SSG adapters
+│   ├── babashka.js
+│   ├── zola.js
+│   └── ...
+├── .github/
+│   ├── workflows/      # CI/CD (CodeQL)
+│   └── ISSUE_TEMPLATE/
+├── META.scm            # Architecture decisions
+├── ECOSYSTEM.scm       # Ecosystem positioning
+├── STATE.scm           # Project state
+├── SECURITY.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+└── LICENSE.txt
+----
+
+== Related Projects
+
+* link:https://github.com/hyperpolymath/poly-ssg-mcp[poly-ssg-mcp] - Unified MCP server hub
+* link:https://github.com/hyperpolymath/rhodium-standard-repositories[rhodium-standard-repositories] - RSR guidelines
+
+== Contributing
+
+See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+
+== Security
+
+See link:SECURITY.md[SECURITY.md] for our security policy and how to report vulnerabilities.
+
+== License
+
+This project is dual-licensed under link:LICENSE.txt[MIT OR AGPL-3.0-or-later].
+
+Individual adapter files are licensed under MIT.
+
+---
+
+_Part of the link:https://github.com/hyperpolymath[hyperpolymath] ecosystem._
