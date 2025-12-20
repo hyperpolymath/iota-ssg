@@ -1,5 +1,4 @@
 README.adoc
-
 .Table of Contents
 
     <<Who Is This For?>>
