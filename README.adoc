@@ -4,7 +4,7 @@ README.adoc
 
     <<Who Is This For?>>
 
-    <<Why iota-ssg?>> ** <<Array-Oriented Templates>> ** <<Massive Parallelism>> ** <<Rank-Based Routing>> ** <<Zero-Overhead Metadata>>
+    <<Why iota-ssg?>>
 
     <<Quick Start>>
 
@@ -15,7 +15,6 @@ README.adoc
     <<Part of poly-ssg>>
 
     <<License>>
-
 Array-oriented static site generator in APL. "iota" (⍳) — The generator of indices. A site engine where content is a vector and transformations are pure array-logic.
 
 === Who Is This For?
