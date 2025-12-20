@@ -1,147 +1,75 @@
-= iota-ssg
-:toc: macro
-:toc-title: Contents
-:toclevels: 2
+README.adoc
 
-Satellite SSG adapter collection for the hyperpolymath MCP ecosystem.
+.Table of Contents
 
-image:https://img.shields.io/badge/license-MIT%20OR%20AGPL--3.0-blue[License]
-image:https://img.shields.io/badge/RSR-Gold-gold[RSR Compliance]
+    <<Who Is This For?>>
 
-toc::[]
+    <<Why iota-ssg?>> ** <<Array-Oriented Templates>> ** <<Massive Parallelism>> ** <<Rank-Based Routing>> ** <<Zero-Overhead Metadata>>
 
-== Overview
+    <<Quick Start>>
 
-**iota-ssg** provides 28 static site generator (SSG) adapters that wrap various SSG CLIs and expose them through the Model Context Protocol (MCP). These adapters are synchronized from the link:https://github.com/hyperpolymath/poly-ssg-mcp[poly-ssg-mcp] hub.
+    <<Features>>
 
-=== What This Is
+    <<Requirements>>
 
-* A satellite project in the hyperpolymath ecosystem
-* Collection of MCP adapters for 28 different static site generators
-* Covers SSGs written in 16+ programming languages
-* Follows Rhodium Standard Repository (RSR) guidelines
+    <<Part of poly-ssg>>
 
-=== What This Is Not
+    <<License>>
 
-* NOT the MCP server itself (that's link:https://github.com/hyperpolymath/poly-ssg-mcp[poly-ssg-mcp])
-* NOT a replacement for the individual SSG tools
+Array-oriented static site generator in APL. "iota" (⍳) — The generator of indices. A site engine where content is a vector and transformations are pure array-logic.
 
-== Supported Static Site Generators
+=== Who Is This For?
 
-[cols="1,1,2", options="header"]
-|===
-|Adapter |Language |Description
+    APL/Dyalog developers who treat content as high-dimensional data.
 
-|Babashka |Clojure |Fast native Clojure scripting
-|Cobalt |Rust |Simple static site generator
-|Coleslaw |Common Lisp |Flexible static blog generator
-|Cryogen |Clojure |Simple static site generator
-|Documenter.jl |Julia |Documentation generator for Julia
-|Ema |Haskell |Static site generator with hot reload
-|Fornax |F# |Scriptable static site generator
-|Franklin.jl |Julia |Flexible static site generator
-|Frog |Racket |Static blog generator
-|Hakyll |Haskell |Flexible static site generator
-|Laika |Scala |Site & e-book generator
-|Marmot |Crystal |Crystal static site generator
-|mdBook |Rust |Create books from Markdown
-|NimblePublisher |Elixir |Publishing framework
-|Nimrod |Nim |Static site generator
-|Orchid |Kotlin |Extensible documentation engine
-|Perun |Clojure |Composable static site generator
-|Pollen |Racket |Book-publishing system
-|Publish |Swift |Static site generator for Swift
-|Reggae |D |Static site generator in D
-|ScalaTex |Scala |Scala template engine
-|Serum |Elixir |Simple static site generator
-|StaticWebPages.jl |Julia |Academic website generator
-|Tableau |Elixir |Markdown static site generator
-|Wub |Tcl |Web application framework
-|YOCaml |OCaml |Static blog generator
-|Zola |Rust |Fast static site generator
-|Zotonic |Erlang |Web framework with CMS
-|===
+    Systems Engineers deploying to Minix, ASICs, or Edge tech where binary size and execution speed are critical.
 
-== Installation
+    Architects needing to bridge legacy array-logic with modern ReScript/Deno orchestration via MCP.
 
-These adapters are meant to be used with the poly-ssg-mcp server. Clone this repository to use the adapters directly:
+=== Why iota-ssg?
 
-[source,bash]
-----
-git clone https://github.com/hyperpolymath/iota-ssg.git
-cd iota-ssg
-----
+==== Array-Oriented Templates Templates are not string interpolations; they are functions mapped across content arrays. By leveraging ⍳, iota-ssg generates site structures with O(1) index-based access.
 
-== Usage
+==== Massive Parallelism Because APL operations are inherently vectorised, iota-ssg synthesises thousands of pages simultaneously. It is the fastest engine in the poly-ssg family for high-volume documentation.
 
-Each adapter exports a standard interface:
+==== Rank-Based Routing Define your site hierarchy through array rank. Nested folders are simply higher-rank dimensions in your content matrix. No more recursive file-system crawls.
 
-[source,javascript]
-----
-import * as zola from './adapters/zola.js';
+==== Zero-Overhead Metadata Frontmatter is parsed into typed arrays. Use Nickel to define the schema, and iota-ssg will ensure your site shape matches your data shape at compile-time.
+=== Quick Start [source,oil]
+Install via asdf
 
-// Connect to the SSG
-await zola.connect();
+asdf install iota-ssg latest
+Create a site (Uses ReScript/Deno wrapper)
 
-// Use the tools
-const result = await zola.tools[0].execute({ path: './my-site' });
+just init my-array-site
+Build with APL core (Defaults to Podman)
 
-// Disconnect
-await zola.disconnect();
-----
+just build
+Inspect the content rank
+just inspect
 
-=== Adapter Interface
+=== Features
 
-All adapters export:
+    Vectorised Site Logic: High-throughput generation via array-logic core.
 
-* `name` - Display name of the SSG
-* `language` - Implementation language
-* `description` - Brief description
-* `connect()` - Verify SSG is available
-* `disconnect()` - Clean up resources
-* `isConnected()` - Check connection status
-* `tools` - Array of available MCP tools
+    ReScript Bridge: Safe, functional interface for Deno and MCP consumers.
 
-== Project Structure
+    Podman-First: Containerised builds for Linux, Minix, and PC.
 
-[source]
-----
-iota-ssg/
-├── adapters/           # 28 SSG adapters
-│   ├── babashka.js
-│   ├── zola.js
-│   └── ...
-├── .github/
-│   ├── workflows/      # CI/CD (CodeQL)
-│   └── ISSUE_TEMPLATE/
-├── META.scm            # Architecture decisions
-├── ECOSYSTEM.scm       # Ecosystem positioning
-├── STATE.scm           # Project state
-├── SECURITY.md
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-└── LICENSE.txt
-----
+    Accessibility: Native metadata for BSL, GSL, ASL, and Makaton.
 
-== Related Projects
+=== Requirements
 
-* link:https://github.com/hyperpolymath/poly-ssg-mcp[poly-ssg-mcp] - Unified MCP server hub
-* link:https://github.com/hyperpolymath/rhodium-standard-repositories[rhodium-standard-repositories] - RSR guidelines
+    Dyalog APL or GNU APL
 
-== Contributing
+    Deno (for ReScript adapters)
 
-See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+    Just (for task orchestration)
 
-== Security
+=== Part of poly-ssg iota-ssg is the array-native member of the poly-ssg family, providing extreme performance through mathematical density.
 
-See link:SECURITY.md[SECURITY.md] for our security policy and how to report vulnerabilities.
+=== License AGPL-3.0-or-later
+Justfile (The Cookbook)
 
-== License
-
-This project is dual-licensed under link:LICENSE.txt[MIT OR AGPL-3.0-or-later].
-
-Individual adapter files are licensed under MIT.
-
----
-
-_Part of the link:https://github.com/hyperpolymath[hyperpolymath] ecosystem._
+This replaces all Makefiles and focuses on the multi-architecture deployment you requested.
+Code snippet
