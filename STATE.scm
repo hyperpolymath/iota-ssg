@@ -1,3 +1,4 @@
+;;; STATE.scm — iota-ssg
 ;; SPDX-License-Identifier: AGPL-3.0-or-later
 ;; SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
 ;;; STATE.scm — iota-ssg
@@ -8,80 +9,57 @@
 
 ;;;; Metadata
 (define metadata
-  '((version . "0.2.0")
-    (updated . "2025-12-17")
-    (project . "iota-ssg")
-    (maintainer . "hyperpolymath")
-    (license . "MIT OR AGPL-3.0-or-later")))
+  '((version . "0.1.0") (updated . "2025-12-17") (project . "iota-ssg")))
 
 ;;;; Current Position
 (define current-position
-  '((phase . "v0.3 - Build System & CI/CD")
-    (overall-completion . 75)
-    (milestone . "Full project infrastructure")
-
+  '((phase . "v0.2 - Documentation & Security Complete")
+    (overall-completion . 50)
     (components
-     ((adapters
-       (status . "complete")
-       (completion . 100)
-       (count . 28)
-       (synchronized . #t))
+     ((rsr-compliance ((status . "complete") (completion . 100)))
+      (documentation ((status . "complete") (completion . 100)))
+      (security-policy ((status . "complete") (completion . 100)))
+      (adapters ((status . "synchronized") (completion . 100) (count . 28)))
+      (testing ((status . "pending") (completion . 0)))
+      (ci-cd ((status . "configured") (completion . 75)))))))
 
-      (documentation
-       (status . "complete")
-       (completion . 100)
-       (files . ("README.adoc" "SECURITY.md" "CODE_OF_CONDUCT.md"
-                 "CONTRIBUTING.md" "cookbook.adoc")))
-
-      (scm-files
-       (status . "complete")
-       (completion . 100)
-       (files . ("META.scm" "ECOSYSTEM.scm" "STATE.scm"
-                 "PLAYBOOK.scm" "AGENTIC.scm" "NEUROSYM.scm")))
-
-      (build-system
-       (status . "complete")
-       (completion . 100)
-       (files . ("justfile" "Mustfile" ".tool-versions" "Containerfile")))
-
-      (ci-cd
-       (status . "complete")
-       (completion . 100)
-       (workflows . ("ci.yml" "codeql.yml" "release.yml")))
-
-      (testing
-       (status . "planned")
-       (completion . 0)
-       (target . "v0.4"))
-
-      (hooks
-       (status . "complete")
-       (completion . 100)
-       (types . ("pre-commit" "commit-msg")))))))
-
-;;;; Blockers and Issues
 (define blockers-and-issues
   '((critical ())
     (high-priority ())
-    (medium-priority
-     (("Add comprehensive test suite" . "v0.4 milestone")))
-    (notes
-     ("All template files finalized"
-      "SCM files comprehensive"
-      "CI/CD pipeline functional"
-      "Hooks configured"))))
+    (notes ("CodeQL workflow needs build commands for full analysis"))))
 
 ;;;; Critical Next Actions
 (define critical-next-actions
   '((immediate
-     (("Verify CI/CD workflows" . high)
-      ("Test adapter functionality" . high)))
+     (("Add adapter tests" . high)
+      ("Complete CI/CD build configuration" . high)))
     (this-week
-     (("Add unit tests" . medium)
-      ("Create CHANGELOG.md" . medium)))
+     (("Add CHANGELOG.md" . medium)
+      ("Review adapter functionality" . medium)))
     (future
-     (("Performance benchmarks" . low)
-      ("Additional adapter coverage" . low)))))
+     (("Add more SSG adapters" . low)
+      ("Performance optimizations" . low)))))
+
+(define roadmap
+  '((v0.1 ((title . "Initial Setup")
+           (status . "complete")
+           (items ("RSR compliance" "Repository structure" "SCM files"))))
+    (v0.2 ((title . "Documentation & Security")
+           (status . "complete")
+           (items ("README.adoc" "SECURITY.md finalized" "CODE_OF_CONDUCT.md finalized"
+                   "CONTRIBUTING.md finalized" "SCM files updated"))))
+    (v0.3 ((title . "Testing & CI/CD")
+           (status . "planned")
+           (items ("Add adapter unit tests" "CodeQL build configuration"
+                   "Integration tests" "Coverage reporting"))))
+    (v0.4 ((title . "Enhanced Adapters")
+           (status . "planned")
+           (items ("Add more SSG adapters" "Improve error handling"
+                   "Add adapter validation" "Documentation generation"))))
+    (v1.0 ((title . "Stable Release")
+           (status . "planned")
+           (items ("Full test coverage" "Performance benchmarks"
+                   "Complete documentation" "Release automation"))))))
 
 ;;;; Roadmap
 (define roadmap
@@ -132,26 +110,14 @@
 ;;;; Session History
 (define session-history
   '((snapshots
-     ((date . "2025-12-15")
-      (session . "initial")
-      (notes . "SCM files added, adapters synchronized"))
-
-     ((date . "2025-12-17")
-      (session . "security-review")
-      (notes . "Fixed all template placeholders, created README"))
-
-     ((date . "2025-12-17")
-      (session . "infrastructure-complete")
-      (notes . "Added all SCM files, Justfile, Mustfile, CI/CD, hooks, cookbook")))))
+     ((date . "2025-12-15") (session . "initial") (notes . "SCM files added"))
+     ((date . "2025-12-17") (session . "security-review")
+      (notes . "Fixed all template placeholders, updated SCM files, created README, completed security policy")))))
 
 ;;;; State Summary
 (define state-summary
   '((project . "iota-ssg")
-    (completion . 75)
-    (phase . "v0.3 - Build System & CI/CD")
+    (completion . 50)
     (blockers . 0)
-    (adapters . 28)
-    (scm-files . 6)
     (updated . "2025-12-17")
-    (next-milestone . "v0.4 - Testing & Validation")
-    (health . "green")))
+    (next-milestone . "v0.3 - Testing & CI/CD")))

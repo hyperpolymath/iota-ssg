@@ -3,8 +3,7 @@
 ;;; META.scm — iota-ssg
 
 (define-module (iota-ssg meta)
-  #:export (architecture-decisions development-practices design-rationale
-            component-registry language-matrix))
+  #:export (architecture-decisions development-practices design-rationale))
 
 ;;;; Architecture Decision Records
 (define architecture-decisions
@@ -46,29 +45,10 @@
 
 ;;;; Development Practices
 (define development-practices
-  '((code-style
-     (languages . ("javascript" "scheme" "yaml" "asciidoc"))
-     (formatter . "prettier")
-     (linter . "eslint")
-     (conventions . ("SPDX headers" "JSDoc comments" "Conventional commits")))
-
-    (security
-     (sast . "CodeQL")
-     (dependency-scanning . "dependabot")
-     (credentials . "env-vars-only")
-     (signing . "ssh-commit-signing")
-     (policy . "coordinated-disclosure"))
-
-    (testing
-     (coverage-minimum . 70)
-     (unit-testing . "deno-test")
-     (integration-testing . "adapter-validation")
-     (e2e-testing . "ssg-build-verification"))
-
-    (versioning
-     (scheme . "SemVer 2.0.0")
-     (changelog . "keep-a-changelog")
-     (release . "github-releases"))
+  '((code-style (languages . ("javascript" "scheme")) (formatter . "prettier") (linter . "eslint"))
+    (security (sast . "CodeQL") (credentials . "env vars only"))
+    (testing (coverage-minimum . 70))
+    (versioning (scheme . "SemVer 2.0.0"))))
 
     (documentation
      (format . "asciidoc")
