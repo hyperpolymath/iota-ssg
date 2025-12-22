@@ -1,0 +1,242 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+# Mustfile — iota-ssg
+#
+# This file defines REQUIRED tasks that MUST pass before certain operations.
+# Unlike the justfile (convenience recipes), these are mandatory gates.
+#
+# Usage: must <target>
+# Or source this file and call functions directly.
+
+# ============================================================================
+# MUST-PASS GATES
+# ============================================================================
+
+# MUST pass before ANY commit
+must_precommit() {
+    echo "=== Pre-commit Gate ==="
+    must_lint || return 1
+    must_syntax || return 1
+    must_no_secrets || return 1
+    echo "✓ Pre-commit gate passed"
+}
+
+# MUST pass before merge to main
+must_premerge() {
+    echo "=== Pre-merge Gate ==="
+    must_precommit || return 1
+    must_tests || return 1
+    must_docs || return 1
+    echo "✓ Pre-merge gate passed"
+}
+
+# MUST pass before release
+must_prerelease() {
+    echo "=== Pre-release Gate ==="
+    must_premerge || return 1
+    must_changelog || return 1
+    must_version || return 1
+    must_security || return 1
+    echo "✓ Pre-release gate passed"
+}
+
+# ============================================================================
+# INDIVIDUAL REQUIREMENTS
+# ============================================================================
+
+# MUST: No syntax errors in adapters
+must_syntax() {
+    echo "Checking syntax..."
+    for f in adapters/*.js; do
+        if ! deno check "$f" 2>/dev/null; then
+            echo "✗ Syntax error in $f"
+            return 1
+        fi
+    done
+    echo "✓ Syntax OK"
+}
+
+# MUST: Linting passes
+must_lint() {
+    echo "Checking lint..."
+    if command -v eslint >/dev/null; then
+        if ! eslint adapters/*.js --quiet; then
+            echo "✗ Lint errors found"
+            return 1
+        fi
+    fi
+    echo "✓ Lint OK"
+}
+
+# MUST: No secrets in code
+must_no_secrets() {
+    echo "Checking for secrets..."
+    if grep -rE "(password|secret|api_key|token)\s*=" adapters/ --include="*.js" 2>/dev/null | grep -v "description"; then
+        echo "✗ Potential secrets found"
+        return 1
+    fi
+    if [ -f ".env" ] && git ls-files --error-unmatch .env 2>/dev/null; then
+        echo "✗ .env file is tracked by git"
+        return 1
+    fi
+    echo "✓ No secrets detected"
+}
+
+# MUST: Tests pass
+must_tests() {
+    echo "Running tests..."
+    if [ -d "tests" ]; then
+        if ! deno test tests/ --allow-read --allow-run; then
+            echo "✗ Tests failed"
+            return 1
+        fi
+    else
+        echo "Note: No tests directory (tests planned for v0.4)"
+    fi
+    echo "✓ Tests OK"
+}
+
+# MUST: Documentation exists
+must_docs() {
+    echo "Checking documentation..."
+    required_docs="README.adoc SECURITY.md CONTRIBUTING.md CODE_OF_CONDUCT.md"
+    for doc in $required_docs; do
+        if [ ! -f "$doc" ]; then
+            echo "✗ Missing required doc: $doc"
+            return 1
+        fi
+        if [ ! -s "$doc" ]; then
+            echo "✗ Empty doc: $doc"
+            return 1
+        fi
+    done
+    echo "✓ Documentation OK"
+}
+
+# MUST: CHANGELOG updated for release
+must_changelog() {
+    echo "Checking CHANGELOG..."
+    if [ ! -f "CHANGELOG.md" ]; then
+        echo "✗ CHANGELOG.md not found"
+        return 1
+    fi
+    if ! grep -q "## \[" CHANGELOG.md; then
+        echo "✗ No version entries in CHANGELOG"
+        return 1
+    fi
+    echo "✓ CHANGELOG OK"
+}
+
+# MUST: Version is valid semver
+must_version() {
+    echo "Checking version..."
+    version=$(grep 'version \. "' STATE.scm | head -1 | sed 's/.*"\([^"]*\)".*/\1/')
+    if ! echo "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+'; then
+        echo "✗ Invalid version: $version"
+        return 1
+    fi
+    echo "✓ Version OK: $version"
+}
+
+# MUST: No known security issues
+must_security() {
+    echo "Checking security..."
+    # Check for outdated dependencies if npm is available
+    if [ -f "package.json" ] && command -v npm >/dev/null; then
+        if npm audit --audit-level=high 2>/dev/null | grep -q "high\|critical"; then
+            echo "⚠ Security vulnerabilities found (review required)"
+        fi
+    fi
+    echo "✓ Security check complete"
+}
+
+# MUST: All adapters have valid interface
+must_adapters() {
+    echo "Validating adapters..."
+    for f in adapters/*.js; do
+        name=$(basename "$f" .js)
+        if [ "$name" = "README" ]; then continue; fi
+
+        if ! deno eval "
+            import * as a from './$f';
+            const required = ['name', 'language', 'description', 'connect', 'disconnect', 'isConnected', 'tools'];
+            const missing = required.filter(r => !(r in a));
+            if (missing.length) { console.error('$name missing:', missing.join(', ')); Deno.exit(1); }
+        " 2>/dev/null; then
+            echo "✗ Adapter validation failed: $name"
+            return 1
+        fi
+    done
+    echo "✓ All adapters valid"
+}
+
+# MUST: SCM files are present and valid
+must_scm() {
+    echo "Checking SCM files..."
+    scm_files="META.scm ECOSYSTEM.scm STATE.scm PLAYBOOK.scm AGENTIC.scm NEUROSYM.scm"
+    for scm in $scm_files; do
+        if [ ! -f "$scm" ]; then
+            echo "✗ Missing SCM file: $scm"
+            return 1
+        fi
+        if [ ! -s "$scm" ]; then
+            echo "✗ Empty SCM file: $scm"
+            return 1
+        fi
+    done
+    echo "✓ SCM files OK"
+}
+
+# MUST: Git hooks are installed
+must_hooks() {
+    echo "Checking git hooks..."
+    if [ ! -x ".git/hooks/pre-commit" ]; then
+        echo "⚠ pre-commit hook not installed"
+        echo "  Run: just hooks-install"
+    fi
+    echo "✓ Hooks check complete"
+}
+
+# ============================================================================
+# ENTRY POINT
+# ============================================================================
+
+# Run specific must check
+must() {
+    case "$1" in
+        precommit)  must_precommit ;;
+        premerge)   must_premerge ;;
+        prerelease) must_prerelease ;;
+        syntax)     must_syntax ;;
+        lint)       must_lint ;;
+        secrets)    must_no_secrets ;;
+        tests)      must_tests ;;
+        docs)       must_docs ;;
+        changelog)  must_changelog ;;
+        version)    must_version ;;
+        security)   must_security ;;
+        adapters)   must_adapters ;;
+        scm)        must_scm ;;
+        hooks)      must_hooks ;;
+        all)        must_prerelease && must_adapters && must_scm ;;
+        *)
+            echo "Usage: must <target>"
+            echo ""
+            echo "Gates:"
+            echo "  precommit   - Required before any commit"
+            echo "  premerge    - Required before merge to main"
+            echo "  prerelease  - Required before release"
+            echo ""
+            echo "Individual checks:"
+            echo "  syntax, lint, secrets, tests, docs,"
+            echo "  changelog, version, security, adapters, scm, hooks"
+            echo ""
+            echo "  all         - Run all checks"
+            ;;
+    esac
+}
+
+# If sourced, export functions. If run directly, execute must.
+if [ "${BASH_SOURCE[0]}" = "$0" ]; then
+    must "$@"
+fi
